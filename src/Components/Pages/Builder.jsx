@@ -17,7 +17,7 @@ const Builder = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/generate-resume",
+        "https://ai-resume-builder-analyzer.onrender.com/api/generate-resume",
         {
           name,
           experience,

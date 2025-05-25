@@ -28,7 +28,7 @@ const Analyzer = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/analyze-resume",
+        "https://ai-resume-builder-analyzer.onrender.com/api/analyze-resume",
         {
           resumeText: text,
         }

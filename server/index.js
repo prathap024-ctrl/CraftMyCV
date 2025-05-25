@@ -112,7 +112,7 @@ app.post("/api/generate-resume", async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`AI Resume Analyzer server running on port ${PORT}`);
 });
