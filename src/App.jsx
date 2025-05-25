@@ -2,9 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Analyzer from "./Components/Pages/Analyzer";
 import Builder from "./Components/Pages/Builder";
-import HomeSec from "./Components/Pages/home";
 import Footer from "./Components/Layouts/Footer";
 import Navbar from "./Components/Layouts/Navbar";
+import HomeSec from "./Components/Pages/HomeSec";
 
 const App = () => {
   return (
