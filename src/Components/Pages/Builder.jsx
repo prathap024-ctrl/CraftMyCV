@@ -44,7 +44,7 @@ const Builder = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6 sm:px-6">
-      <div className="bg-white w-full max-w-xl mx-auto rounded-lg shadow-lg p-4 sm:p-6">
+      <div className="bg-white w-full max-w-xl mx-auto rounded-lg shadow-lg p-4 sm:p-6 mt-40 lg:mt-20 lg:mb-10">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-xl sm:text-2xl font-bold text-center mb-5">
             Resume Builder

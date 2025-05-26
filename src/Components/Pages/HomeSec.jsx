@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const HomeSec = () => {
   return (
-    <div className="min-h-screen text-white bg-gradient-to-b from-blue-900 to-blue-600 px-4 py-10 sm:px-6">
+    <div className="min-h-screen text-white px-4 py-10 sm:px-6 flex-col flex justify-center items-center">
       <div className="flex flex-col items-center justify-center h-full text-center">
         <div>
           <h3 className="font-bold text-lg sm:text-xl">Welcome to</h3>
