@@ -43,14 +43,16 @@ const Builder = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center p-5">
-      <div className="bg-white w-full max-w-[75%] mx-auto rounded-lg shadow-lg p-5">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6 sm:px-6">
+      <div className="bg-white w-full max-w-xl mx-auto rounded-lg shadow-lg p-4 sm:p-6">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold text-center mb-5">Resume Builder</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-center mb-5">
+            Resume Builder
+          </h1>
 
           {!resumeGenerated ? (
-            <div className="w-full h-full max-h-[400px] overflow-y-auto">
-              <div className="mb-5">
+            <div className="w-full max-h-[70vh] overflow-y-auto">
+              <div className="mb-4">
                 <label className="block font-semibold">Name:</label>
                 <input
                   type="text"
@@ -61,7 +63,7 @@ const Builder = () => {
                 />
               </div>
 
-              <div className="mb-5">
+              <div className="mb-4">
                 <label className="block font-semibold">Experience:</label>
                 <textarea
                   value={experience}
@@ -72,7 +74,7 @@ const Builder = () => {
                 />
               </div>
 
-              <div className="mb-5">
+              <div className="mb-4">
                 <label className="block font-semibold">Education:</label>
                 <textarea
                   value={education}
@@ -83,7 +85,7 @@ const Builder = () => {
                 />
               </div>
 
-              <div className="mb-5">
+              <div className="mb-4">
                 <label className="block font-semibold">Skills:</label>
                 <textarea
                   value={skills}
@@ -94,8 +96,10 @@ const Builder = () => {
                 />
               </div>
 
-              <div className="mb-5">
-                <label className="block font-semibold">Contact Information:</label>
+              <div className="mb-4">
+                <label className="block font-semibold">
+                  Contact Information:
+                </label>
                 <textarea
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
@@ -107,28 +111,29 @@ const Builder = () => {
 
               <button
                 onClick={handleGenerateResume}
-                className="bg-blue-500 text-white p-2 rounded w-full"
+                className="bg-blue-500 text-white p-3 rounded w-full text-sm sm:text-base"
                 disabled={loading}
               >
                 {loading ? "Generating..." : "Generate Resume"}
               </button>
             </div>
           ) : loading ? (
-            <p>Generating your resume...</p>
+            <p className="text-center">Generating your resume...</p>
           ) : (
             <div className="w-full mt-5">
-              <h2 className="text-xl font-semibold mb-3">Generated Resume</h2>
+              <h2 className="text-lg sm:text-xl font-semibold mb-3">
+                Generated Resume
+              </h2>
 
-              {/* Scrollable container for the generated resume */}
-              <div className="max-h-[400px] overflow-y-auto bg-gray-100 p-4 rounded w-full max-w-4xl">
-                <pre className="whitespace-pre-wrap text-left">
+              <div className="max-h-[400px] overflow-y-auto bg-gray-100 p-4 rounded w-full">
+                <pre className="whitespace-pre-wrap text-left text-sm sm:text-base">
                   {generatedResume}
                 </pre>
               </div>
 
               <button
                 onClick={handleDownloadPDF}
-                className="mt-5 bg-green-500 text-white p-3 rounded w-full"
+                className="mt-5 bg-green-500 text-white p-3 rounded-full w-full text-sm sm:text-base"
               >
                 Download Resume as PDF
               </button>
