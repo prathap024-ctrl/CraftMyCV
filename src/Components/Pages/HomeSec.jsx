@@ -1,7 +1,7 @@
 ("use client");
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import { FlipWords } from "../ui/flip-words";
 import { ArrowRight, CheckIcon, ChevronDownIcon } from "lucide-react";
 import { Field, Label, Switch } from "@headlessui/react";
