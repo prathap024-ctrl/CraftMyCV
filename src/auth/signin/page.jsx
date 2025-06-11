@@ -1,6 +1,6 @@
 import { ArrowLeft, GalleryVerticalEnd } from "lucide-react"
 
-import { LoginForm } from "@/components/LoginForm"
+import { LoginForm } from "@/Components/LoginForm"
 import { Link } from "react-router-dom"
 import images from "../../assets/images"
 
