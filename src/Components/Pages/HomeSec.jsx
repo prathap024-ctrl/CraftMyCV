@@ -12,7 +12,7 @@ import {
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/ui/carousel";
+} from "@/Components/ui/carousel";
 
 function HomeSec() {
   const [agreed, setAgreed] = useState(false);
