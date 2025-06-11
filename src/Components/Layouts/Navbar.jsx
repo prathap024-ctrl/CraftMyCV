@@ -1,14 +1,15 @@
+"use client"
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, closeSidebar } from "../../Store/Slice/Sidebar/index";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/Components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from "@/Components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 

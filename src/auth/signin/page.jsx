@@ -1,15 +1,19 @@
-import { ArrowLeft, GalleryVerticalEnd } from "lucide-react"
+"use client";
 
-import { LoginForm } from "@/Components/LoginForm"
-import { Link } from "react-router-dom"
-import images from "../../assets/images"
+import { ArrowLeft } from "lucide-react";
+import { LoginForm } from "@/Components/LoginForm";
+import { Link } from "react-router-dom";
+import images from "../../assets/images";
 
 export default function LoginPage() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-start gap-2 md:justify-start">
-          <Link to={"/"} className="flex items-center text-white gap-2 font-medium">
+          <Link
+            to={"/"}
+            className="flex items-center text-white gap-2 font-medium"
+          >
             <ArrowLeft /> CraftMyCV
           </Link>
         </div>
@@ -27,5 +31,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }
