@@ -53,18 +53,18 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop Sign In */}
-
-        <SignedOut>
-          <Link to={"/sign-in"}>
-            <Button variant="outline" className="text-black">
-              Sign In
-            </Button>
-          </Link>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-
+        <div className="hidden md:block">
+          <SignedOut>
+            <Link to={"/sign-in"}>
+              <Button variant="outline" className="text-black">
+                Sign In
+              </Button>
+            </Link>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
         {/* Mobile Menu Button */}
         <Sheet open={isOpen} onOpenChange={() => dispatch(toggleSidebar())}>
           <SheetTrigger asChild>

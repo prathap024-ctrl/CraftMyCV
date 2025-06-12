@@ -165,7 +165,7 @@ function HomeSec() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                 <Link
-                  to={isSignedIn ? "/build" : "/sign-in"}
+                   to={isSignedIn ? "/build" : "/sign-up"}
                   className="rounded-md bg-black px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   Get started

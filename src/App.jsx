@@ -12,14 +12,13 @@ import Builder from "./Components/Pages/Builder";
 import Footer from "./Components/Layouts/Footer";
 import Navbar from "./Components/Layouts/Navbar";
 import HomeSec from "./Components/Pages/HomeSec";
-import SignInPage from "./(auth)/signin/[[...sign-in]]/page";
-import SignUpPage from "./(auth)/signup/[[...sign-up]]/page";
-import { useAuth } from "@clerk/clerk-react";
+import SignInPage from "./Auth/Sign-In/page";
+import SignUpPage from "./Auth/Sign-Up/page";
+import ProtectedRoute from "./Auth/ProtectedRoute";
 
 const AppContent = () => {
   const location = useLocation();
   const hideNavAndFooter = ["/sign-in", "/sign-up"].includes(location.pathname);
-  const { isSignedIn } = useAuth();
 
   return (
     <div className=" min-h-screen grid-background flex flex-col ">
@@ -29,12 +28,20 @@ const AppContent = () => {
           {/* Public + Auth Routes */}
           <Route path="/" element={<HomeSec />} />
           <Route
-            path={isSignedIn ? "/analyzer" : "/sign-in"}
-            element={<Analyzer />}
+            path="/analyzer"
+            element={
+              <ProtectedRoute>
+                <Analyzer />
+              </ProtectedRoute>
+            }
           />
           <Route
-            path={isSignedIn ? "/build" : "/sign-in"}
-            element={<Builder />}
+            path="/build"
+            element={
+              <ProtectedRoute>
+                <Builder />
+              </ProtectedRoute>
+            }
           />
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
