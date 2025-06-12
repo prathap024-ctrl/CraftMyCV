@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar, closeSidebar } from "../../Store/Slice/Sidebar/index";
@@ -12,15 +12,22 @@ import {
 } from "@/Components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SignedIn, SignedOut, useAuth, UserButton } from "@clerk/clerk-react";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.sidebar.isOpen);
 
+  const { isSignedIn } = useAuth();
+
   const menuList = [
-    { name: "Home", path: "/" },
-    { name: "Analyze", path: "/analyzer" },
-    { name: "Create", path: "/build" },
+    ...(isSignedIn
+      ? [
+          { name: "Home", path: "/" },
+          { name: "Analyze", path: "/analyzer" },
+          { name: "Create", path: "/build" },
+        ]
+      : []),
   ];
 
   return (
@@ -32,7 +39,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <ul className="hidden sm:flex gap-6 items-center text-sm sm:text-base">
+        <ul className="hidden sm:flex gap-6 items-center text-sm sm:text-base cursor-pointer">
           {menuList.map((item, index) => (
             <li key={index}>
               <Link
@@ -46,11 +53,17 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop Sign In */}
-        <Link to="/sign-in" className="hidden sm:block">
-          <Button variant="outline" className="text-black">
-            Sign In
-          </Button>
-        </Link>
+
+        <SignedOut>
+          <Link to={"/sign-in"}>
+            <Button variant="outline" className="text-black">
+              Sign In
+            </Button>
+          </Link>
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
 
         {/* Mobile Menu Button */}
         <Sheet open={isOpen} onOpenChange={() => dispatch(toggleSidebar())}>
@@ -65,9 +78,20 @@ const Navbar = () => {
           </SheetTrigger>
           <SheetContent side="right" className="bg-black text-white w-64">
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle className="text-white">Menu</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col gap-4 p-8">
+            <div className="flex flex-col gap-4 p-8 cursor-pointer">
+              <SignedOut>
+                <Link to={"/sign-in"}>
+                  <Button variant="outline" className="text-black">
+                    Sign In
+                  </Button>
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+
               {menuList.map((item, index) => (
                 <Link
                   key={index}
@@ -77,11 +101,6 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <Link to="/sign-in" onClick={() => dispatch(closeSidebar())}>
-                <Button variant="outline" className="text-black w-full">
-                  Sign In
-                </Button>
-              </Link>
             </div>
           </SheetContent>
         </Sheet>

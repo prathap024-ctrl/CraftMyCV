@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/Components/ui/button";
@@ -13,9 +13,13 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/Components/ui/carousel";
+import { useAuth } from "@clerk/clerk-react";
 
 function HomeSec() {
   const [agreed, setAgreed] = useState(false);
+
+  const { isSignedIn } = useAuth();
+
   const words = [
     "AI Resume Builder",
     "Resume Analyzer",
@@ -110,15 +114,16 @@ function HomeSec() {
             professional resumes by analyzing content, formatting, and job
             relevance using artificial intelligence.
           </p>
+
           <div className="py-8 w-full flex justify-center items-center space-x-4">
             <Link
-              to="/build"
+              to={isSignedIn ? "/build" : "/sign-in"}
               className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-xs "
             >
               <Button variant="outline">Create</Button>
             </Link>
             <Link
-              to="/analyzer"
+              to={isSignedIn ? "/analyzer" : "/sign-in"}
               className="text-sm font-semibold text-white flex"
             >
               Analyze
@@ -160,7 +165,7 @@ function HomeSec() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                 <Link
-                  to="/build"
+                  to={isSignedIn ? "/build" : "/sign-in"}
                   className="rounded-md bg-black px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   Get started

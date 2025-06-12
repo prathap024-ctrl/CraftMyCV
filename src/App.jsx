@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import {
@@ -12,13 +12,14 @@ import Builder from "./Components/Pages/Builder";
 import Footer from "./Components/Layouts/Footer";
 import Navbar from "./Components/Layouts/Navbar";
 import HomeSec from "./Components/Pages/HomeSec";
-import LoginPage from "./auth/signin/page";
-import SignUpPage from "./auth/signup/page";
-import ProtectedRoute from "./auth/ProtectedRoutes/ProtectedRoutes";
+import SignInPage from "./(auth)/signin/[[...sign-in]]/page";
+import SignUpPage from "./(auth)/signup/[[...sign-up]]/page";
+import { useAuth } from "@clerk/clerk-react";
 
 const AppContent = () => {
   const location = useLocation();
   const hideNavAndFooter = ["/sign-in", "/sign-up"].includes(location.pathname);
+  const { isSignedIn } = useAuth();
 
   return (
     <div className=" min-h-screen grid-background flex flex-col ">
@@ -28,22 +29,14 @@ const AppContent = () => {
           {/* Public + Auth Routes */}
           <Route path="/" element={<HomeSec />} />
           <Route
-            path="/analyzer"
-            element={
-              <ProtectedRoute>
-                <Analyzer />{" "}
-              </ProtectedRoute>
-            }
+            path={isSignedIn ? "/analyzer" : "/sign-in"}
+            element={<Analyzer />}
           />
           <Route
-            path="/build"
-            element={
-              <ProtectedRoute>
-                <Builder />{" "}
-              </ProtectedRoute>
-            }
+            path={isSignedIn ? "/build" : "/sign-in"}
+            element={<Builder />}
           />
-          <Route path="/sign-in" element={<LoginPage />} />
+          <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
         </Routes>
       </main>
