@@ -53,11 +53,16 @@ const Navbar = () => {
         </ul>
 
         {/* Desktop Sign In */}
-        <div className="hidden md:block">
+        <div className="hidden md:block space-x-4">
           <SignedOut>
             <Link to={"/sign-in"}>
               <Button variant="outline" className="text-black">
                 Sign In
+              </Button>
+            </Link>
+            <Link to={"/sign-up"}>
+              <Button variant="outline" className="text-black">
+                Sign Up
               </Button>
             </Link>
           </SignedOut>
@@ -85,6 +90,11 @@ const Navbar = () => {
                 <Link to={"/sign-in"}>
                   <Button variant="outline" className="text-black">
                     Sign In
+                  </Button>
+                </Link>
+                <Link to={"/sign-up"}>
+                  <Button variant="outline" className="text-black">
+                    Sign Up
                   </Button>
                 </Link>
               </SignedOut>
