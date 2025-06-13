@@ -31,10 +31,10 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full bg-transparent backdrop-blur-2xl text-white z-50 px-4 py-3">
+    <nav className="fixed top-0 w-full bg-transparent backdrop-blur-2xl shadow-2xl z-50 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold">
+        <Link to="/" className="text-2xl font-bold text-accent">
           CraftMyCV
         </Link>
 

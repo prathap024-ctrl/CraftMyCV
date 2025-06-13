@@ -104,8 +104,8 @@ function HomeSec() {
 
   return (
     <>
-      <div className="relative flex h-screen w-full overflow-hidden rounded-md items-center antialiased md:items-center md:justify-center">
-        <div className="relative z-10 mx-auto w-full max-w-7xl p-4">
+      <div className="relative flex h-1/2 w-full overflow-hidden rounded-md items-center antialiased md:items-center md:justify-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl p-4 mt-24">
           <h1 className="bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text text-center text-4xl font-bold text-transparent md:text-7xl">
             CraftMyCV <br /> <FlipWords words={words} /> <br />
           </h1>
@@ -115,26 +115,19 @@ function HomeSec() {
             relevance using artificial intelligence.
           </p>
 
-          <div className="py-8 w-full flex justify-center items-center space-x-4">
+          <div className="py-8 w-full flex justify-center items-center">
             <Link
               to={isSignedIn ? "/build" : "/sign-in"}
-              className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-black shadow-xs "
+              className="rounded-md text-xl px-8 py-2 font-semibold bg-white text-black shadow-xs"
             >
-              <Button variant="outline">Create</Button>
-            </Link>
-            <Link
-              to={isSignedIn ? "/analyzer" : "/sign-in"}
-              className="text-sm font-semibold text-white flex"
-            >
-              Analyze
-              <ArrowRight />
+              Create
             </Link>
           </div>
         </div>
       </div>
       {/* CTA Section */}
       <div className="bg-transparent">
-        <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+        <div className="mx-auto max-w-7xl py-16 sm:px-6 sm:py-32 lg:px-8">
           <div className="relative isolate overflow-hidden bg-white px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
             <svg
               viewBox="0 0 1024 1024"
@@ -165,10 +158,10 @@ function HomeSec() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                 <Link
-                   to={isSignedIn ? "/build" : "/sign-up"}
-                  className="rounded-md bg-black px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  to={isSignedIn ? "/build" : "/sign-up"}
+                  className="rounded-md bg-black px-3.5 py-2.5 flex items-center gap-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
-                  Get started
+                  Get started <ArrowRight />
                 </Link>
               </div>
             </div>
@@ -185,7 +178,7 @@ function HomeSec() {
         </div>
       </div>
       {/* Pricing */}
-      <div className="relative isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8">
+      <div className="relative isolate bg-transparent px-6 py-16 sm:py-32 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 "
@@ -288,7 +281,7 @@ function HomeSec() {
         </div>
       </div>
       {/* Stats */}
-      <div className="bg-white py-24 sm:py-32">
+      <div className="bg-transparent py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
             {stats.map((stat) => (
@@ -296,8 +289,8 @@ function HomeSec() {
                 key={stat.id}
                 className="mx-auto flex max-w-xs flex-col gap-y-4"
               >
-                <dt className="text-base/7 text-gray-600">{stat.name}</dt>
-                <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                <dt className="text-base/7 text-white">{stat.name}</dt>
+                <dd className="order-first text-3xl font-semibold tracking-tight text-white sm:text-5xl">
                   {stat.value}
                 </dd>
               </div>
@@ -354,7 +347,7 @@ function HomeSec() {
       </section>
 
       {/* Contact form */}
-      <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="isolate bg-transparent px-6 py-24 sm:py-32 lg:px-8">
         <div
           aria-hidden="true"
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -368,20 +361,20 @@ function HomeSec() {
           />
         </div>
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
+          <h2 className="text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">
             Product Support
           </h2>
-          <p className="mt-2 text-lg/8 text-gray-600">
+          <p className="mt-2 text-lg/8 text-white">
             Need help using our resume builder, ATS checker, or AI features?
             Reach out and we'll assist you as soon as possible.
           </p>
         </div>
-        <form className="mx-auto mt-16 max-w-xl sm:mt-20">
+        <form className="mx-auto mt-16 max-w-2xl sm:mt-20 bg-white p-16 rounded-4xl">
           <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
             <div>
               <label
                 htmlFor="first-name"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 First name
               </label>
@@ -390,15 +383,16 @@ function HomeSec() {
                   id="first-name"
                   name="first-name"
                   type="text"
+                  placeholder="First Name"
                   autoComplete="given-name"
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 "
+                  className="block w-full rounded-md bg-transparent px-3.5 py-2 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500"
                 />
               </div>
             </div>
             <div>
               <label
                 htmlFor="last-name"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 Last name
               </label>
@@ -407,15 +401,16 @@ function HomeSec() {
                   id="last-name"
                   name="last-name"
                   type="text"
+                  placeholder="Last Name"
                   autoComplete="family-name"
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 "
+                  className="block w-full rounded-md bg-transparent px-3.5 py-2 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500"
                 />
               </div>
             </div>
             <div className="sm:col-span-2">
               <label
                 htmlFor="company"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 Company
               </label>
@@ -424,15 +419,16 @@ function HomeSec() {
                   id="company"
                   name="company"
                   type="text"
+                  placeholder="Company"
                   autoComplete="organization"
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 "
+                  className="block w-full rounded-md bg-transparent px-3.5 py-2 text-base text-white outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500"
                 />
               </div>
             </div>
             <div className="sm:col-span-2">
               <label
                 htmlFor="email"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 Email
               </label>
@@ -442,41 +438,41 @@ function HomeSec() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 "
+                  placeholder="abc@email.com"
+                  className="block w-full rounded-md bg-transparent px-3.5 py-2 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500"
                 />
               </div>
             </div>
             <div className="sm:col-span-2">
               <label
                 htmlFor="phone-number"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 Phone number
               </label>
               <div className="mt-2.5">
-                <div className="flex rounded-md bg-white outline-1 -outline-offset-1">
+                <div className="flex rounded-md bg-transparent outline-1 -outline-offset-1">
                   <div className="grid shrink-0 grid-cols-1 focus-within:relative">
                     <select
                       id="country"
                       name="country"
                       autoComplete="country"
                       aria-label="Country"
-                      className="col-start-1 row-start-1 w-full appearance-none rounded-md py-2 pr-7 pl-3.5 text-base text-gray-500 placeholder:text-gray-400"
+                      className="col-start-1 row-start-1 w-full appearance-none bg-black rounded-md py-2 pr-7 pl-3.5 text-base text-white placeholder:text-gray-500"
                     >
                       <option>IN</option>
-                      <option>US</option>
                     </select>
                     <ChevronDownIcon
                       aria-hidden="true"
-                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                      className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-black sm:size-4"
                     />
                   </div>
                   <input
                     id="phone-number"
                     name="phone-number"
                     type="text"
-                    placeholder="123-456-7890"
-                    className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                    placeholder="+91 12345-67890"
+                    className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-black placeholder:text-gray-500 focus:outline-none sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -484,7 +480,7 @@ function HomeSec() {
             <div className="sm:col-span-2">
               <label
                 htmlFor="message"
-                className="block text-sm/6 font-semibold text-gray-900"
+                className="block text-sm/6 font-semibold text-black"
               >
                 Message
               </label>
@@ -492,8 +488,9 @@ function HomeSec() {
                 <textarea
                   id="message"
                   name="message"
+                  placeholder="Message"
                   rows={4}
-                  className="block w-full rounded-md bg-white px-3.5 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 "
+                  className="block w-full rounded-md bg-transparent px-3.5 py-2 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 "
                   defaultValue={""}
                 />
               </div>
@@ -503,7 +500,7 @@ function HomeSec() {
                 <Switch
                   checked={agreed}
                   onChange={setAgreed}
-                  className="group flex w-8 flex-none cursor-pointer rounded-full bg-gray-200 p-px ring-1 ring-gray-900/5 transition-colors duration-200 ease-in-out ring-inset data-checked:bg-black"
+                  className="group flex w-8 flex-none cursor-pointer rounded-full bg-gray-200 p-px ring-1 ring-gray-900/5 transition-colors duration-200 ease-in-out ring-inset data-checked:bg-gray-900"
                 >
                   <span className="sr-only">Agree to policies</span>
                   <span
@@ -512,7 +509,7 @@ function HomeSec() {
                   />
                 </Switch>
               </div>
-              <Label className="text-sm/6 text-gray-600">
+              <Label className="text-sm/6 text-black">
                 By selecting this, you agree to our{" "}
                 <a href="#" className="font-semibold text-black">
                   privacy&nbsp;policy
@@ -525,7 +522,7 @@ function HomeSec() {
             <Button
               type="submit"
               variant="default"
-              className="block w-full rounded-md  px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-xs"
+              className="block w-full rounded-md px-3.5 py-2.5 text-center cursor-pointer text-sm font-semibold text-white shadow-xs"
             >
               Let's talk
             </Button>
