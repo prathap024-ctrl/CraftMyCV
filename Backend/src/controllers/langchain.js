@@ -93,7 +93,7 @@ Your task is to:
     }}
     // ...repeat for the remaining 6 sections
   ],
-  "summary": {
+  "summary": {{
     "atsScore": 81,
     "atsFriendlySections": "5/8",
     "avgSectionScore": 81,
