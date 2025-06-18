@@ -38,7 +38,7 @@ export const analyzeResume = async (req, res) => {
     });
 
     const splitDocs = await textSplitter.splitDocuments(docs);
-    const fullText = splitDocs.map((doc) => doc.pageContent).join("\n");
+    const fullText = docs.map((d) => d.pageContent).join("\n");
 
     // Build the LangChain prompt
     const prompt = ChatPromptTemplate.fromTemplate(`
@@ -126,7 +126,7 @@ Your task is to:
     // Fallback log in case result is empty
     if (!result || !result.sections?.length) {
       const rawOutput = await model.invoke(prompt.format({ docs: fullText }));
-      console.warn("Gemini Raw Output:\n", rawOutput.content);
+      console.log("Raw Gemini Output:", rawOutput.content);
       return res
         .status(500)
         .json({ error: "Model failed to produce structured output." });
