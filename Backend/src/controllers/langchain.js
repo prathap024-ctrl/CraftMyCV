@@ -4,7 +4,7 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import multer from "multer";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
-import { DirectoryLoader } from "@langchain/document_loaders/fs/directory";
+import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 // LangChain setup
@@ -137,7 +137,7 @@ Your task is to:
       ...result,
     });
 
-    await newAnalysis.save(); 
+    await newAnalysis.save();
     latestResumeAnalysis = result;
 
     // Respond to client
