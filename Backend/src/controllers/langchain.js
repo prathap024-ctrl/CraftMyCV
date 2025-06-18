@@ -4,12 +4,20 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import multer from "multer";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { DirectoryLoader } from "@langchain/document_loaders/fs/directory";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 // LangChain setup
 const parser = new JsonOutputParser();
 
 let latestResumeAnalysis;
+
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+
+const model = new ChatGoogleGenerativeAI({
+  model: "gemini-2.0-flash",
+  temperature: 0,
+});
 
 const upload = multer({ dest: "public/uploads/" });
 export const analyzeResumeMiddleware = upload.single("file");
@@ -21,9 +29,22 @@ export const analyzeResume = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const loader = new PDFLoader(req.file.path);
-    const docs = await loader.load();
-    const fullText = docs.map((d) => d.pageContent).join("\n"); // ✅ pass actual resume text
+    const directoryLoader = new DirectoryLoader(analyzeResumeMiddleware, {
+      ".pdf": (path) => new PDFLoader(path),
+    });
+
+    const directoryDocs = await directoryLoader.load();
+
+    console.log(directoryDocs[0]);
+
+    /* Additional steps : Split text into chunks with any TextSplitter. You can then use it as context or save it to memory afterwards. */
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+    });
+
+    const splitDocs = await textSplitter.splitDocuments(directoryDocs);
+    console.log(splitDocs[0]);
 
     const prompt = ChatPromptTemplate.fromTemplate(`
 You are an expert ATS (Applicant Tracking System) resume screening assistant.
@@ -68,7 +89,7 @@ Your task is to:
 ---
 
 ### Resume Content:
-{{docs}}
+{{splitDocs}}
 
 ---
 
@@ -107,13 +128,8 @@ Your task is to:
 `);
 
     // Run LangChain pipeline
-    const chain = prompt.pipe(
-      new ChatGoogleGenerativeAI({
-        model: "gemini-2.0-flash",
-        temperature: 0,
-      })
-    );
-    const result = await chain.invoke({ docs: fullText }); // ✅ fixed: actually pass resume data
+    const chain = prompt.pipe(model).pipe(parser);
+    const result = await chain.invoke({ docs: splitDocs });
 
     // Save result in DB
     const newAnalysis = new ResumeAnalysis({
