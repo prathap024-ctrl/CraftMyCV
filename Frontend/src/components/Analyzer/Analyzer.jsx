@@ -30,7 +30,7 @@ export default function ResumeATSReport() {
     try {
       setRefreshing(true);
       const res = await axios.get(
-        "http://localhost:5000/api/analysis/fetch-analysis"
+        "https://craftmycv-1.onrender.com/api/analysis/fetch-analysis"
       );
 
       if (res.data?.sections) {
