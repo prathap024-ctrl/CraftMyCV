@@ -26,7 +26,7 @@ import {
   CardContent,
   Badge,
   Progress,
-} from "@/components/ui";
+} from "@/components/ui/card";
 import {
   Upload,
   File,
