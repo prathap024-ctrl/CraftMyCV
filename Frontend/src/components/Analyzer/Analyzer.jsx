@@ -57,19 +57,20 @@ export default function ResumeATSReport() {
     }
   };
   useEffect(() => {
-    if (!analysisFromStore) {
+    if (!analysisFromStore || !analysisFromStore.sections?.length) {
       fetchAnalysis();
     } else {
       setSections(analysisFromStore.sections || []);
       setSummary(analysisFromStore.summary || null);
       setLoading(false);
     }
-  }, [analysisFromStore]);
+  }, []);
 
   const handleClear = () => {
     setSections([]);
     setSummary(null);
-    dispatch(clearResumeAnalysis()); // <-- Clear Redux too
+    setLoading(false);
+    dispatch(clearResumeAnalysis());
   };
 
   if (loading) return <div className="p-6">Loading report...</div>;
@@ -161,7 +162,16 @@ export default function ResumeATSReport() {
           <Progress value={overallScore} className="h-4" />
         </div>
         <div className="h-64">
-          <Doughnut data={chartData} options={{ maintainAspectRatio: false }} />
+          {chartData?.datasets[0]?.data?.length > 0 ? (
+            <Doughnut
+              data={chartData}
+              options={{ maintainAspectRatio: false }}
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No chart data available.
+            </p>
+          )}
         </div>
       </Card>
 

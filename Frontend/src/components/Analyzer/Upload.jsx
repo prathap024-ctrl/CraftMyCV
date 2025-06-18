@@ -24,14 +24,14 @@ function FileUploadComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleUpload = async (resumeFile) => {
-    if (!resumeFile) {
+  const handleUpload = async (selectedFile) => {
+    if (!selectedFile) {
       toast.error("No valid file found.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", resumeFile);
+    formData.append("file", selectedFile);
 
     try {
       const res = await axios.post(
