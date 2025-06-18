@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Field, Label, Switch } from "@headlessui/react";
 import { ChevronDownIcon } from "lucide-react";
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const ContactPage = () => {
   const [agreed, setAgreed] = useState(false);
