@@ -18,5 +18,6 @@ export const resumeAnalysisSlice = createSlice({
   },
 });
 
-export const { setResumeAnalysis, clearResumeAnalysis } = resumeAnalysisSlice.actions;
+export const { setResumeAnalysis, clearResumeAnalysis } =
+  resumeAnalysisSlice.actions;
 export default resumeAnalysisSlice.reducer;

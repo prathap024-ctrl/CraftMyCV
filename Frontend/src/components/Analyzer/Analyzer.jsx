@@ -56,21 +56,19 @@ export default function ResumeATSReport() {
       setRefreshing(false);
     }
   };
-
   useEffect(() => {
     if (analysisFromStore) {
       setSections(analysisFromStore.sections || []);
       setSummary(analysisFromStore.summary || null);
-      setLoading(false);
     } else {
-      fetchAnalysis();
+      fetchAnalysis(); // fallback to API
     }
   }, [analysisFromStore]);
 
   const handleClear = () => {
     setSections([]);
     setSummary(null);
-    dispatch(clearResumeAnalysis());
+    dispatch(clearResumeAnalysis()); // <-- Clear Redux too
   };
 
   if (loading) return <div className="p-6">Loading report...</div>;
