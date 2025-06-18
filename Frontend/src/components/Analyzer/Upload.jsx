@@ -15,7 +15,7 @@ import * as React from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setResumeAnalysis } from "@/Store/Slice/Analyzer/index";
+import { setResumeAnalysis } from "@/Store/Slice/Analyser/index";
 import { useNavigate } from "react-router-dom";
 
 function FileUploadComponent() {

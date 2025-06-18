@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setResumeAnalysis,
   clearResumeAnalysis,
-} from "@/Store/Slice/Analyzer/index";
+} from "@/Store/Slice/Analyser/index";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
