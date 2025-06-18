@@ -201,6 +201,7 @@ export default function ResumeAnalyzer() {
             onClick={handleRefresh}
             disabled={refreshing}
             variant="outline"
+            className="text-black"
           >
             <RefreshCcw
               className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
