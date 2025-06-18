@@ -14,15 +14,19 @@ import { File, Upload, X } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setResumeAnalysis } from "@/Store/Slice/Analyzer/index";
+import { useRouter } from "next/navigation";
 
 function FileUploadComponent() {
   const [files, setFiles] = React.useState([]);
 
-  const handleUpload = async () => {
-    if (!files.length) return;
+  const dispatch = useDispatch();
+  const router = useRouter();
 
+  const handleUpload = async (resumeFile) => {
     const formData = new FormData();
-    formData.append("resume", files[0]);
+    formData.append("file", resumeFile);
 
     try {
       const res = await axios.post(
@@ -32,7 +36,10 @@ function FileUploadComponent() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
+      if (res.data) {
+        dispatch(setResumeAnalysis(res.data)); // store in redux
+        router.push("/dashboard");
+      }
       console.log("Analysis result:", res.data);
       toast.success("Resume analyzed successfully!");
     } catch (error) {

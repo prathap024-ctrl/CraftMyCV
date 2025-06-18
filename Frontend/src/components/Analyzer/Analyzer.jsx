@@ -17,6 +17,11 @@ import {
   Lightbulb,
   RefreshCcw,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setResumeAnalysis,
+  clearResumeAnalysis,
+} from "@/Store/Slice/Analyzer/index";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -25,6 +30,9 @@ export default function ResumeATSReport() {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const analysisFromStore = useSelector((state) => state.resumeAnalysis.data);
+  const dispatch = useDispatch();
 
   const fetchAnalysis = async () => {
     try {
@@ -40,9 +48,7 @@ export default function ResumeATSReport() {
         setSummary(res.data.summary);
       }
 
-      if (!res.data?.sections?.length) {
-        console.warn("Empty analysis sections:", res.data);
-      }
+      dispatch(setResumeAnalysis(res.data));
     } catch (err) {
       console.error("Failed to fetch analysis data:", err);
     } finally {
@@ -52,12 +58,19 @@ export default function ResumeATSReport() {
   };
 
   useEffect(() => {
-    fetchAnalysis();
-  }, []);
+    if (analysisFromStore) {
+      setSections(analysisFromStore.sections || []);
+      setSummary(analysisFromStore.summary || null);
+      setLoading(false);
+    } else {
+      fetchAnalysis();
+    }
+  }, [analysisFromStore]);
 
   const handleClear = () => {
     setSections([]);
     setSummary(null);
+    dispatch(clearResumeAnalysis());
   };
 
   if (loading) return <div className="p-6">Loading report...</div>;
@@ -108,8 +121,7 @@ export default function ResumeATSReport() {
             className="gap-2 text-black"
           >
             <RefreshCcw
-              className="w-4 h-4 animate-spin"
-              style={{ display: refreshing ? "inline" : "none" }}
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
             />
             Refresh Report
           </Button>
