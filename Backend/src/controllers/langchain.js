@@ -6,31 +6,27 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import multer from "multer";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
 
-
-// LangChain Setup
+// LangChain setup
 const parser = new JsonOutputParser();
 const llm = model;
 
 let latestResumeAnalysis;
 
+// Multer config (✅ FIXED field name must match frontend `formData.append("file", ...)`)
 const upload = multer({ dest: "public/uploads/" });
+export const analyzeResumeMiddleware = upload.single("file"); // ✅ changed from "resume" to "file"
 
-export const analyzeResumeMiddleware = upload.single("resume");
-
+// Resume analysis controller
 export const analyzeResume = async (req, res) => {
   try {
-    console.log("Uploaded file:", req.file);
-
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
     const loader = new PDFLoader(req.file.path);
     const docs = await loader.load();
+    const fullText = docs.map((d) => d.pageContent).join("\n"); // ✅ pass actual resume text
 
-    console.log("Loaded docs:", docs);
-
-    // 2. Prepare prompt
     const prompt = ChatPromptTemplate.fromTemplate(`
 You are an expert resume screening and ATS (Applicant Tracking System) analysis assistant.
 
@@ -87,7 +83,7 @@ Then summarize:
       "score": 85,
       "strengths": ["Good layout", "Consistent font usage"],
       "weaknesses": ["No page numbers", "Lacks accessibility tags"],
-      "tips": ["Add page numbers", "Use tagged PDF format"],
+      "tips": ["Add page numbers", "Use tagged PDF format"]
     }}
     // Repeat for other sections
   ],
@@ -98,37 +94,43 @@ Then summarize:
     "sectionsBelow80": ["...", "..."],
     "pros": ["...", "..."],
     "cons": ["...", "..."],
-    "missing": ["...", "..."],
+    "missing": ["...", "..."]
   }}
 }}
 `);
 
-    // 3. Build the chain and run
+    // Run LangChain pipeline
     const chain = prompt.pipe(llm).pipe(parser);
-    const result = await chain.invoke({});
+    const result = await chain.invoke({ docs: fullText }); // ✅ fixed: actually pass resume data
+
+    // Save result in DB
     const newAnalysis = new ResumeAnalysis({
-      resumeId: req.body.resumeId || new Date().toISOString(), // optional: pass a resumeId
-      ...result
+      resumeId: req.body.resumeId || new Date().toISOString(),
+      ...result,
     });
 
-    await newAnalysis.save(); // ✅ Store in MongoDB
-
+    await newAnalysis.save(); // ✅ MongoDB
     latestResumeAnalysis = result;
 
-    // 4. Send response
+    // Respond to client
     res.status(200).json(result);
   } catch (error) {
     console.error("Error analyzing resume:", error);
     res.status(500).json({ error: "Failed to process resume." });
   } finally {
     // Optional: Clean up uploaded file
-    if (req.file?.path) fs.unlinkSync(req.file.path);
+    if (req.file?.path) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.warn("File cleanup failed:", err.message);
+      });
+    }
   }
 };
 
+// Fetch latest analysis (for dashboard preview or reload)
 export const fetchAnalysis = async (req, res) => {
   if (!latestResumeAnalysis) {
-    return res.status(500).json({ error: "failed to fetch data" }); // add return
+    return res.status(404).json({ error: "No analysis available yet." });
   }
 
   return res.status(200).json(latestResumeAnalysis);
