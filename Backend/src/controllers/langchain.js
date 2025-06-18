@@ -1,7 +1,6 @@
 import fs from "fs";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { model } from "../Gemini/gemini.js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import multer from "multer";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
@@ -10,6 +9,14 @@ import ResumeAnalysis from "../models/ResumeAnalysis.js";
 const parser = new JsonOutputParser();
 
 let latestResumeAnalysis;
+
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+
+const model = new ChatGoogleGenerativeAI({
+  model: "gemini-2.0-flash",
+  temperature: 0,
+});
+
 
 const upload = multer({ dest: "public/uploads/" });
 export const analyzeResumeMiddleware = upload.single("file");
@@ -107,7 +114,7 @@ Your task is to:
 `);
 
     // Run LangChain pipeline
-    const chain = prompt.pipe(model()).pipe(parser);
+    const chain = prompt.pipe(model).pipe(parser);
     const result = await chain.invoke({ docs: fullText }); // ✅ fixed: actually pass resume data
 
     // Save result in DB
