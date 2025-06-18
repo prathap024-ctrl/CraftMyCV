@@ -5,6 +5,6 @@ import {
 } from "../controllers/langchain.js";
 
 const router = Router();
-router.route("/analyze").post(analyzeResume);
+router.route("/analyze").post(analyzeResumeMiddleware, analyzeResume);
 
 export default router;

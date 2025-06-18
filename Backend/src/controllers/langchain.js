@@ -1,24 +1,23 @@
 import fs from "fs";
+import multer from "multer";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import multer from "multer";
-import ResumeAnalysis from "../models/ResumeAnalysis.js";
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import ResumeAnalysis from "../models/ResumeAnalysis.js";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 // LangChain setup
 const parser = new JsonOutputParser();
-
 let latestResumeAnalysis;
 
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-
+// Gemini model setup
 const model = new ChatGoogleGenerativeAI({
   model: "gemini-2.0-flash",
   temperature: 0,
 });
 
+// Multer upload config
 const upload = multer({ dest: "public/uploads/" });
 export const analyzeResumeMiddleware = upload.single("file");
 
@@ -29,23 +28,19 @@ export const analyzeResume = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const directoryLoader = new DirectoryLoader(analyzeResumeMiddleware, {
-      ".pdf": (path) => new PDFLoader(path),
-    });
+    // Load and split the resume PDF
+    const loader = new PDFLoader(req.file.path);
+    const docs = await loader.load();
 
-    const directoryDocs = await directoryLoader.load();
-
-    console.log(directoryDocs[0]);
-
-    /* Additional steps : Split text into chunks with any TextSplitter. You can then use it as context or save it to memory afterwards. */
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
       chunkOverlap: 200,
     });
 
-    const splitDocs = await textSplitter.splitDocuments(directoryDocs);
-    console.log(splitDocs[0]);
+    const splitDocs = await textSplitter.splitDocuments(docs);
+    const fullText = splitDocs.map((doc) => doc.pageContent).join("\n");
 
+    // Build the LangChain prompt
     const prompt = ChatPromptTemplate.fromTemplate(`
 You are an expert ATS (Applicant Tracking System) resume screening assistant.
 
@@ -89,7 +84,7 @@ Your task is to:
 ---
 
 ### Resume Content:
-{{splitDocs}}
+{{docs}}
 
 ---
 
@@ -102,16 +97,15 @@ Your task is to:
       "score": 85,
       "strengths": ["Clean layout", "Consistent headings"],
       "weaknesses": ["No contact links", "No section dividers"],
-      "tips": ["Add LinkedIn/GitHub links", "Use clearer section separation"],
+      "tips": ["Add LinkedIn/GitHub links", "Use clearer section separation"]
     }},
     {{
       "title": "Experience",
       "score": 76,
       "strengths": ["Quantified results", "Relevant roles"],
       "weaknesses": ["Inconsistent date formatting", "Gaps in timeline"],
-      "tips": ["Standardize date format", "Explain any job gaps"],
+      "tips": ["Standardize date format", "Explain any job gaps"]
     }}
-    // ...repeat for the remaining 6 sections
   ],
   "summary": {{
     "atsScore": 81,
@@ -120,18 +114,25 @@ Your task is to:
     "sectionsBelow80": ["Experience", "Certifications", "Additional Information"],
     "pros": ["Well-structured format", "Strong technical skills"],
     "cons": ["Missing certifications", "Lacks ATS keywords in summary"],
-    "missing": ["Contact info section", "Portfolio link", "Soft skills block"],
+    "missing": ["Contact info section", "Portfolio link", "Soft skills block"]
     }}
     }}
-
-
 `);
 
     // Run LangChain pipeline
     const chain = prompt.pipe(model).pipe(parser);
-    const result = await chain.invoke({ docs: splitDocs });
+    const result = await chain.invoke({ docs: fullText });
 
-    // Save result in DB
+    // Fallback log in case result is empty
+    if (!result || !result.sections?.length) {
+      const rawOutput = await model.invoke(prompt.format({ docs: fullText }));
+      console.warn("Gemini Raw Output:\n", rawOutput.content);
+      return res
+        .status(500)
+        .json({ error: "Model failed to produce structured output." });
+    }
+
+    // Save to DB
     const newAnalysis = new ResumeAnalysis({
       resumeId: req.body.resumeId || new Date().toISOString(),
       ...result,
@@ -140,13 +141,11 @@ Your task is to:
     await newAnalysis.save();
     latestResumeAnalysis = result;
 
-    // Respond to client
     res.status(200).json(result);
   } catch (error) {
     console.error("Error analyzing resume:", error);
     res.status(500).json({ error: "Failed to process resume." });
   } finally {
-    // Optional: Clean up uploaded file
     if (req.file?.path) {
       fs.unlink(req.file.path, (err) => {
         if (err) console.warn("File cleanup failed:", err.message);
@@ -155,7 +154,7 @@ Your task is to:
   }
 };
 
-// Fetch latest analysis (for dashboard preview or reload)
+// Fetch the latest result (useful for client preview)
 export const fetchAnalysis = async (req, res) => {
   if (!latestResumeAnalysis) {
     return res.status(404).json({ error: "No analysis available yet." });
