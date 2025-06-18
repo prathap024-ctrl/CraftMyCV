@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { setActiveTab } from "../../Store/Slice/tabs/index";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
