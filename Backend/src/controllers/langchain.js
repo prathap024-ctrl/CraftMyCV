@@ -12,9 +12,8 @@ const llm = model;
 
 let latestResumeAnalysis;
 
-// Multer config (✅ FIXED field name must match frontend `formData.append("file", ...)`)
 const upload = multer({ dest: "public/uploads/" });
-export const analyzeResumeMiddleware = upload.single("file"); // ✅ changed from "resume" to "file"
+export const analyzeResumeMiddleware = upload.single("file");
 
 // Resume analysis controller
 export const analyzeResume = async (req, res) => {
