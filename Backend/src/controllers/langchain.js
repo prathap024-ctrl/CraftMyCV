@@ -27,13 +27,12 @@ export const analyzeResume = async (req, res) => {
     const fullText = docs.map((d) => d.pageContent).join("\n"); // ✅ pass actual resume text
 
     const prompt = ChatPromptTemplate.fromTemplate(`
-You are an expert resume screening and ATS (Applicant Tracking System) analysis assistant.
+You are an expert ATS (Applicant Tracking System) resume screening assistant.
 
 Your task is to:
-- Parse the provided resume content (raw text extracted from a PDF),
-- Analyze it across 8 key ATS-relevant sections,
-- Score and assess each section realistically from 0–100,
-- Return a structured JSON report used for UI rendering, Redux state, and PDF export.
+- Analyze the provided resume content (raw extracted text),
+- Score it across 8 ATS-relevant sections from 0 to 100,
+- Return structured JSON data ONLY with scores, insights, and tips.
 
 ---
 
@@ -50,22 +49,22 @@ Your task is to:
 ---
 
 ### For each section, return an object with:
-- "title": string (section name),
-- "score": number (0–100),
-- "strengths": array of 2–3 positive observations,
-- "weaknesses": array of 2–3 weak points or gaps,
-- "tips": array of 2–3 specific actionable improvement suggestions
+- "title": string — section name
+- "score": number — from 0 to 100
+- "strengths": array — 2–3 positive highlights
+- "weaknesses": array — 2–3 issues or gaps
+- "tips": array — 2–3 specific actionable suggestions
 
 ---
 
-### After the sections, provide a "summary" object with:
-- "atsScore": number (0–100) – average of all section scores
-- "atsFriendlySections": string – count of sections scoring 80 or more, like (e.g., "5/7")
-- "avgSectionScore": number – average of all section scores
-- "sectionsBelow80": array of section titles scoring < 80
-- "pros": array of 2–3 overall strengths across resume
-- "cons": array of 2–3 overall weaknesses
-- "missing": array of 2–3 key resume components that are absent or weak
+### After listing all 8 sections, return a "summary" object:
+- "atsScore": number — average of all section scores (0–100)
+- "atsFriendlySections": string — number of sections scoring ≥80 (e.g., "5/8")
+- "avgSectionScore": number — average of all section scores
+- "sectionsBelow80": array — section titles with score < 80
+- "pros": array — 2–3 overall resume strengths
+- "cons": array — 2–3 overall weaknesses or red flags
+- "missing": array — 2–3 important resume elements that are missing or underdeveloped
 
 ---
 
@@ -74,7 +73,7 @@ Your task is to:
 
 ---
 
-### Output Format (JSON Only):
+### Output format: JSON only. No markdown, explanation, or natural language — only return valid JSON in this exact structure:
 
 {{
   "sections": [
@@ -92,9 +91,9 @@ Your task is to:
       "weaknesses": ["Inconsistent date formatting", "Gaps in timeline"],
       "tips": ["Standardize date format", "Explain any job gaps"],
     }}
-    // ... repeat for all 8 sections
+    // ...repeat for the remaining 6 sections
   ],
-  "summary": {{
+  "summary": {
     "atsScore": 81,
     "atsFriendlySections": "5/8",
     "avgSectionScore": 81,
@@ -104,6 +103,7 @@ Your task is to:
     "missing": ["Contact info section", "Portfolio link", "Soft skills block"],
     }}
     }}
+
 
 `);
 
