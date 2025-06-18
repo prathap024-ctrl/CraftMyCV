@@ -57,11 +57,12 @@ export default function ResumeATSReport() {
     }
   };
   useEffect(() => {
-    if (analysisFromStore) {
+    if (!analysisFromStore) {
+      fetchAnalysis();
+    } else {
       setSections(analysisFromStore.sections || []);
       setSummary(analysisFromStore.summary || null);
-    } else {
-      fetchAnalysis(); // fallback to API
+      setLoading(false);
     }
   }, [analysisFromStore]);
 
