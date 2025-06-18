@@ -18,9 +18,7 @@ import {
   FileUploadTrigger,
 } from "@/components/ui/file-upload";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Upload,
@@ -209,45 +207,57 @@ export default function ResumeAnalyzer() {
   ];
 
   return (
-    <div className="space-y-8 p-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-10 p-6">
+      {/* === Header Controls === */}
+      <section className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Resume ATS Report</h1>
         <div className="flex gap-2">
           <Button
             onClick={handleRefresh}
             disabled={refreshing}
             variant="outline"
+            className="flex items-center gap-2"
           >
             <RefreshCcw
               className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
             />
             Refresh
           </Button>
-          <Button onClick={handleClear} variant="destructive">
+          <Button
+            onClick={handleClear}
+            variant="destructive"
+            className="flex items-center gap-2"
+          >
             <XOctagon className="w-4 h-4" />
-            Clear Report
+            Clear
           </Button>
         </div>
-      </div>
+      </section>
 
-      {/* === Metrics === */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {metrics.map((m, i) => (
-          <Card key={i} className="flex items-center gap-4 p-4">
-            <div className="bg-muted p-3 rounded-full">{m.icon}</div>
-            <div>
-              <p className="text-sm text-muted-foreground">{m.label}</p>
-              <p className="text-xl font-bold">{m.value}</p>
+      {/* === Metrics Section === */}
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">ATS Metrics</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {metrics.map((m, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-4 p-4 bg-muted rounded-md"
+            >
+              <div className="p-2 bg-white rounded-full shadow">{m.icon}</div>
+              <div>
+                <p className="text-sm text-muted-foreground">{m.label}</p>
+                <p className="text-lg font-semibold">{m.value}</p>
+              </div>
             </div>
-          </Card>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
 
-      {/* === Score & Doughnut === */}
-      <Card className="grid md:grid-cols-2 gap-6 p-6">
+      {/* === Overall Score Section === */}
+      <section className="grid md:grid-cols-2 gap-6 items-center">
         <div>
-          <h2 className="text-2xl font-semibold mb-2">
-            Overall ATS Score:{" "}
+          <h2 className="text-lg font-semibold mb-2">Overall ATS Score</h2>
+          <p className="text-2xl font-bold mb-1">
             <span
               className={
                 summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"
@@ -255,90 +265,85 @@ export default function ResumeAnalyzer() {
             >
               {summary.atsScore}%
             </span>
-          </h2>
-          <Progress value={summary.atsScore} className="h-4" />
+          </p>
+          <Progress value={summary.atsScore} className="h-3" />
         </div>
         <div className="h-64">
           <Doughnut data={chartData} options={{ maintainAspectRatio: false }} />
         </div>
-      </Card>
+      </section>
 
-      {/* === Section Snapshots === */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {sections.map((s, i) => (
-          <Card key={i}>
-            <CardHeader className="flex justify-between items-center">
-              <CardTitle className="text-base">{s.title}</CardTitle>
-              <Badge
-                variant={
-                  s.score >= 80
-                    ? "default"
-                    : s.score >= 70
-                      ? "secondary"
-                      : "destructive"
-                }
-              >
-                {s.score}%
-              </Badge>
-            </CardHeader>
-            <CardContent className="space-y-2">
+      {/* === Section-Wise Scores === */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold">Section Scores</h2>
+        <div className="space-y-3">
+          {sections.map((s, i) => (
+            <div key={i} className="space-y-1">
+              <div className="flex justify-between text-sm font-medium">
+                <span>{s.title}</span>
+                <span
+                  className={`font-semibold ${
+                    s.score >= 80
+                      ? "text-green-600"
+                      : s.score >= 70
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                  }`}
+                >
+                  {s.score}%
+                </span>
+              </div>
               <Progress value={s.score} />
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {s.score >= 80
                   ? "Excellent"
                   : s.score >= 70
                     ? "Fair — needs work"
                     : "Poor — revise this section"}
               </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* === Strengths / Weaknesses / Suggestions === */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex items-center gap-2">
-            <ThumbsUp className="text-green-500" />
-            <CardTitle>Strengths</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc list-inside text-sm">
-              {summary.pros?.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+      {/* === Strengths === */}
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <ThumbsUp className="text-green-500 w-4 h-4" />
+          Strengths
+        </h2>
+        <ul className="list-disc list-inside text-sm">
+          {summary.pros?.map((p, i) => (
+            <li key={i}>{p}</li>
+          ))}
+        </ul>
+      </section>
 
-        <Card>
-          <CardHeader className="flex items-center gap-2">
-            <XOctagon className="text-red-500" />
-            <CardTitle>Weaknesses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc list-inside text-sm">
-              {summary.cons?.map((c, i) => (
-                <li key={i}>{c}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+      {/* === Weaknesses === */}
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <XOctagon className="text-red-500 w-4 h-4" />
+          Weaknesses
+        </h2>
+        <ul className="list-disc list-inside text-sm">
+          {summary.cons?.map((c, i) => (
+            <li key={i}>{c}</li>
+          ))}
+        </ul>
+      </section>
 
-        <Card>
-          <CardHeader className="flex items-center gap-2">
-            <Lightbulb className="text-yellow-500" />
-            <CardTitle>Suggestions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc list-inside text-sm">
-              {summary.missing?.map((m, i) => (
-                <li key={i}>{m}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+      {/* === Suggestions === */}
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <Lightbulb className="text-yellow-500 w-4 h-4" />
+          Suggestions
+        </h2>
+        <ul className="list-disc list-inside text-sm">
+          {summary.missing?.map((m, i) => (
+            <li key={i}>{m}</li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }
