@@ -24,28 +24,32 @@ function FileUploadComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleUpload = async () => {
-    for (const resumeFile of files) {
-      const formData = new FormData();
-      formData.append("file", resumeFile);
+  const handleUpload = async (resumeFile) => {
+    if (!resumeFile) {
+      toast.error("No valid file found.");
+      return;
+    }
 
-      try {
-        const res = await axios.post(
-          "https://craftmycv-1.onrender.com/api/chatmodels/analyze",
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-        if (res.data) {
-          dispatch(setResumeAnalysis(res.data));
-          navigate("/dashboard");
-          toast.success("Resume analyzed successfully!");
+    const formData = new FormData();
+    formData.append("file", resumeFile);
+
+    try {
+      const res = await axios.post(
+        "https://craftmycv-1.onrender.com/api/chatmodels/analyze",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
         }
-      } catch (error) {
-        console.error("Upload error:", error);
-        toast.error("Failed to analyze resume.");
+      );
+
+      if (res.data) {
+        dispatch(setResumeAnalysis(res.data));
+        navigate("/dashboard");
+        toast.success("Resume analyzed successfully!");
       }
+    } catch (error) {
+      console.error("Upload error:", error?.response || error.message || error);
+      toast.error("Failed to analyze resume.");
     }
   };
 
@@ -105,7 +109,7 @@ function FileUploadComponent() {
       </FileUpload>
 
       <Button
-        onClick={handleUpload}
+        onClick={() => handleUpload(files[0]?.file ?? files[0])} // fallback
         disabled={files.length === 0}
         className="w-full bg-green-600 text-white hover:bg-green-700"
       >
