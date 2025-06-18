@@ -8,7 +8,6 @@ import ResumeAnalysis from "../models/ResumeAnalysis.js";
 
 // LangChain setup
 const parser = new JsonOutputParser();
-const llm = model;
 
 let latestResumeAnalysis;
 
@@ -108,7 +107,7 @@ Your task is to:
 `);
 
     // Run LangChain pipeline
-    const chain = prompt.pipe(llm).pipe(parser);
+    const chain = prompt.pipe(model()).pipe(parser);
     const result = await chain.invoke({ docs: fullText }); // ✅ fixed: actually pass resume data
 
     // Save result in DB
