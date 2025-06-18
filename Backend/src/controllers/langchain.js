@@ -5,6 +5,7 @@ import { model } from "../Gemini/gemini.js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import multer from "multer";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 // LangChain setup
 const parser = new JsonOutputParser();
@@ -12,8 +13,7 @@ const llm = model;
 
 let latestResumeAnalysis;
 
-const upload = multer({ dest: "public/uploads/" });
-export const analyzeResumeMiddleware = upload.single("resume"); 
+export const analyzeResumeMiddleware = upload.single("resume");
 
 // Resume analysis controller
 export const analyzeResume = async (req, res) => {
