@@ -216,7 +216,6 @@ export default function ResumeAnalyzer() {
             onClick={handleRefresh}
             disabled={refreshing}
             variant="outline"
-            className="flex items-center gap-2"
           >
             <RefreshCcw
               className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
