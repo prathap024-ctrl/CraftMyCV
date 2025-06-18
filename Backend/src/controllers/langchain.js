@@ -137,7 +137,7 @@ Your task is to:
       ...result,
     });
 
-    await newAnalysis.save(); // ✅ MongoDB
+    await newAnalysis.save(); 
     latestResumeAnalysis = result;
 
     // Respond to client
