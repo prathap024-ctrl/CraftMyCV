@@ -4,16 +4,12 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { model } from "../Gemini/gemini.js";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import ResumeAnalysis from "../models/ResumeAnalysis.js";
-import { upload } from "../middlewares/multer.middleware.js";
 
 // LangChain setup
 const parser = new JsonOutputParser();
 const llm = model;
 
 let latestResumeAnalysis;
-
-// Middleware: file upload using multer
-export const analyzeResumeMiddleware = upload.single("file");
 
 // Resume analysis controller
 export const analyzeResume = async (req, res) => {
