@@ -193,6 +193,7 @@ export default function ResumeAnalyzer() {
 
   return (
     <div className="space-y-10 p-6" ref={previewRef}>
+      {/* Header */}
       <section className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Resume ATS Report</h1>
         <div className="flex gap-2">
@@ -216,20 +217,28 @@ export default function ResumeAnalyzer() {
         </div>
       </section>
 
+      {/* ATS Score */}
       <section>
         <h2 className="text-lg font-semibold mb-2">ATS Score</h2>
         <div className="flex items-center gap-4">
           <span
-            className={`text-2xl font-bold ${summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"}`}
+            className={`text-2xl font-bold ${
+              summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"
+            }`}
           >
             {summary.atsScore}%
           </span>
           <Progress value={summary.atsScore} className="h-3 w-full" />
         </div>
+        <div className="text-sm text-muted-foreground mt-1">
+          Average Section Score: <strong>{summary.avgSectionScore}%</strong> |
+          ATS-Friendly Sections: <strong>{summary.atsFriendlySections}</strong>
+        </div>
       </section>
 
+      {/* Match Overview */}
       <section>
-        <h2 className="text-lg font-semibold">Match Overview</h2>
+        <h2 className="text-lg font-semibold mb-2">Match Overview</h2>
         <div className="h-64">
           <DoughnutChart
             data={chartData}
@@ -238,11 +247,62 @@ export default function ResumeAnalyzer() {
         </div>
       </section>
 
+      {/* Section-Wise Breakdown */}
       <section>
-        <h2 className="text-lg font-semibold">Feedback</h2>
+        <h2 className="text-lg font-semibold mb-4">Section Analysis</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {sections.map((section, idx) => (
+            <div
+              key={idx}
+              className="border p-4 rounded-xl shadow-sm space-y-2"
+            >
+              <h3 className="text-md font-semibold flex justify-between">
+                {section.title}
+                <span
+                  className={`text-sm font-medium ${
+                    section.score >= 80
+                      ? "text-green-600"
+                      : section.score >= 60
+                        ? "text-yellow-600"
+                        : "text-red-600"
+                  }`}
+                >
+                  {section.score}%
+                </span>
+              </h3>
+              <div className="text-sm">
+                <strong className="text-green-600">Strengths:</strong>
+                <ul className="list-disc list-inside mb-2">
+                  {section.strengths.map((point, i) => (
+                    <li key={i}>{point}</li>
+                  ))}
+                </ul>
+                <strong className="text-red-600">Weaknesses:</strong>
+                <ul className="list-disc list-inside mb-2">
+                  {section.weaknesses.map((point, i) => (
+                    <li key={i}>{point}</li>
+                  ))}
+                </ul>
+                <strong className="text-yellow-500">Tips:</strong>
+                <ul className="list-disc list-inside">
+                  {section.tips.map((point, i) => (
+                    <li key={i}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Feedback Summary */}
+      <section>
+        <h2 className="text-lg font-semibold mb-2">Feedback Summary</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h3 className="font-medium text-green-600">Strengths</h3>
+            <h3 className="font-medium text-green-600 mb-1">
+              Overall Strengths
+            </h3>
             <ul className="list-disc list-inside text-sm">
               {summary.pros?.map((p, i) => (
                 <li key={i}>{p}</li>
@@ -250,7 +310,9 @@ export default function ResumeAnalyzer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-red-600">Weaknesses</h3>
+            <h3 className="font-medium text-red-600 mb-1">
+              Overall Weaknesses
+            </h3>
             <ul className="list-disc list-inside text-sm">
               {summary.cons?.map((c, i) => (
                 <li key={i}>{c}</li>
@@ -258,7 +320,9 @@ export default function ResumeAnalyzer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-medium text-yellow-500">Suggestions</h3>
+            <h3 className="font-medium text-yellow-500 mb-1">
+              Missing Elements
+            </h3>
             <ul className="list-disc list-inside text-sm">
               {summary.missing?.map((m, i) => (
                 <li key={i}>{m}</li>
@@ -266,8 +330,21 @@ export default function ResumeAnalyzer() {
             </ul>
           </div>
         </div>
+
+        {/* Sections Below 80 */}
+        <div className="mt-4">
+          <h3 className="text-sm font-medium text-muted-foreground mb-1">
+            Sections below 80%:
+          </h3>
+          <ul className="list-disc list-inside text-sm">
+            {summary.sectionsBelow80?.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ul>
+        </div>
       </section>
 
+      {/* PDF Download */}
       <section>
         <Button onClick={handleDownloadPDF}>Download Report PDF</Button>
       </section>
