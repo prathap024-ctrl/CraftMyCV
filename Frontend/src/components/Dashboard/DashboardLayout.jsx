@@ -4,8 +4,7 @@ import { setActiveTab } from "../../Store/Slice/tabs/index";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import FileUploadComponent from "@/components/Analyzer/Upload";
-import ResumeATSReport from "@/components/Analyzer/Analyzer";
+import ResumeAnalyzer from "@/components/Analyzer/ResumeAnalyzer";
 
 export default function DashboardLayout() {
   const dispatch = useDispatch();
@@ -51,8 +50,7 @@ function AnalyzerTab() {
         <p className="text-sm text-gray-300">Analyze your resume using AI.</p>
       </div>
       <div className="mt-4">
-        <FileUploadComponent />
-        <ResumeATSReport />
+        <ResumeAnalyzer />
       </div>
     </div>
   );
