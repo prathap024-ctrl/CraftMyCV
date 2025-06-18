@@ -38,7 +38,7 @@ export default function ResumeATSReport() {
     try {
       setRefreshing(true);
       const res = await axios.get(
-        `https://craftmycv-vc78.onrender.com/api/analysis/fetch-analysis?ts=${Date.now()}`
+        `https://craftmycv-vc78.onrender.com/api/analysis/fetch-analysis`
       );
 
       if (res.data?.sections) {
