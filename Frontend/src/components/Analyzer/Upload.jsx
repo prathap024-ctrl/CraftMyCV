@@ -35,7 +35,7 @@ function FileUploadComponent() {
 
     try {
       const res = await axios.post(
-        "https://craftmycv-1.onrender.com/api/chatmodels/analyze",
+        "https://craftmycv-vc78.onrender.com/api/chatmodels/analyze",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
