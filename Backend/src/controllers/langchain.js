@@ -31,9 +31,9 @@ You are an expert resume screening and ATS (Applicant Tracking System) analysis 
 
 Your task is to:
 - Parse the provided resume content (raw text extracted from a PDF),
-- Analyze it across 7 key ATS-relevant sections,
-- Score and assess each section realistically,
-- Return a structured JSON report for frontend display.
+- Analyze it across 8 key ATS-relevant sections,
+- Score and assess each section realistically from 0–100,
+- Return a structured JSON report used for UI rendering, Redux state, and PDF export.
 
 ---
 
@@ -49,22 +49,23 @@ Your task is to:
 
 ---
 
-### Scoring Instructions:
-For each section, provide:
-- "title": Section name
-- "score": Number from 0–100
-- "strengths": 2–3 strengths
-- "weaknesses": 2–3 weaknesses
-- "tips": 2–3 practical improvement suggestions
+### For each section, return an object with:
+- "title": string (section name),
+- "score": number (0–100),
+- "strengths": array of 2–3 positive observations,
+- "weaknesses": array of 2–3 weak points or gaps,
+- "tips": array of 2–3 specific actionable improvement suggestions
 
-Then summarize:
-- "atsScore": Average score across all sections
-- "atsFriendlySections": Count of sections scoring 80 or more (e.g., "5/7")
-- "avgSectionScore": Average of all section scores
-- "sectionsBelow80": List of section names with score < 80
-- "pros": 2–3 general strengths
-- "cons": 2–3 general weaknesses
-- "missing": 2–3 missing but expected resume elements
+---
+
+### After the sections, provide a "summary" object with:
+- "atsScore": number (0–100) – average of all section scores
+- "atsFriendlySections": string – count of sections scoring 80 or more, like (e.g., "5/7")
+- "avgSectionScore": number – average of all section scores
+- "sectionsBelow80": array of section titles scoring < 80
+- "pros": array of 2–3 overall strengths across resume
+- "cons": array of 2–3 overall weaknesses
+- "missing": array of 2–3 key resume components that are absent or weak
 
 ---
 
@@ -73,29 +74,37 @@ Then summarize:
 
 ---
 
-### Output only valid JSON. Example format:
+### Output Format (JSON Only):
 
 {{
   "sections": [
     {{
       "title": "Format",
       "score": 85,
-      "strengths": ["Good layout", "Consistent font usage"],
-      "weaknesses": ["No page numbers", "Lacks accessibility tags"],
-      "tips": ["Add page numbers", "Use tagged PDF format"]
+      "strengths": ["Clean layout", "Consistent headings"],
+      "weaknesses": ["No contact links", "No section dividers"],
+      "tips": ["Add LinkedIn/GitHub links", "Use clearer section separation"],
+    }},
+    {{
+      "title": "Experience",
+      "score": 76,
+      "strengths": ["Quantified results", "Relevant roles"],
+      "weaknesses": ["Inconsistent date formatting", "Gaps in timeline"],
+      "tips": ["Standardize date format", "Explain any job gaps"],
     }}
-    // Repeat for other sections
+    // ... repeat for all 8 sections
   ],
   "summary": {{
-    "atsScore": 82,
-    "atsFriendlySections": "5/7",
-    "avgSectionScore": 82,
-    "sectionsBelow80": ["...", "..."],
-    "pros": ["...", "..."],
-    "cons": ["...", "..."],
-    "missing": ["...", "..."]
-  }}
-}}
+    "atsScore": 81,
+    "atsFriendlySections": "5/8",
+    "avgSectionScore": 81,
+    "sectionsBelow80": ["Experience", "Certifications", "Additional Information"],
+    "pros": ["Well-structured format", "Strong technical skills"],
+    "cons": ["Missing certifications", "Lacks ATS keywords in summary"],
+    "missing": ["Contact info section", "Portfolio link", "Soft skills block"],
+    }}
+    }}
+
 `);
 
     // Run LangChain pipeline

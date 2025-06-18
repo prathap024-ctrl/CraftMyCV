@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,21 +20,12 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  Upload,
-  File,
-  X,
-  CheckCircle2,
-  BarChart2,
-  AlertCircle,
-  ThumbsUp,
-  XOctagon,
-  Lightbulb,
-  RefreshCcw,
-} from "lucide-react";
-import { Doughnut } from "react-chartjs-2";
+import { Upload, File, X, Doughnut, RefreshCcw } from "lucide-react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut as DoughnutChart } from "react-chartjs-2";
 import { toast } from "sonner";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -47,6 +38,7 @@ export default function ResumeAnalyzer() {
   const analysis = useSelector((state) => state.resumeAnalysis.data);
   const [sections, setSections] = useState([]);
   const [summary, setSummary] = useState(null);
+  const previewRef = useRef(null);
 
   const handleUpload = async (file) => {
     if (!file || file.type !== "application/pdf") {
@@ -107,6 +99,19 @@ export default function ResumeAnalyzer() {
     } finally {
       setRefreshing(false);
     }
+  };
+
+  const handleDownloadPDF = async () => {
+    const element = previewRef.current;
+    const canvas = await html2canvas(element);
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("resume-report.pdf");
   };
 
   const onFileReject = (file, message) => {
@@ -173,8 +178,6 @@ export default function ResumeAnalyzer() {
     );
   }
 
-  // === If analysis is available ===
-
   const chartData = {
     labels: sections.map((s) => s.title),
     datasets: [
@@ -188,27 +191,8 @@ export default function ResumeAnalyzer() {
     ],
   };
 
-  const metrics = [
-    {
-      icon: <CheckCircle2 className="text-green-600" />,
-      label: "ATS‑Friendly Sections",
-      value: summary.atsFriendlySections || "0/0",
-    },
-    {
-      icon: <BarChart2 className="text-blue-600" />,
-      label: "Avg Section Score",
-      value: `${summary.avgSectionScore ?? 0}%`,
-    },
-    {
-      icon: <AlertCircle className="text-red-600" />,
-      label: "Sections below 80%",
-      value: summary.sectionsBelow80?.length ?? 0,
-    },
-  ];
-
   return (
-    <div className="space-y-10 p-6">
-      {/* === Header Controls === */}
+    <div className="space-y-10 p-6" ref={previewRef}>
       <section className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Resume ATS Report</h1>
         <div className="flex gap-2">
@@ -227,121 +211,65 @@ export default function ResumeAnalyzer() {
             variant="destructive"
             className="flex items-center gap-2"
           >
-            <XOctagon className="w-4 h-4" />
             Clear
           </Button>
         </div>
       </section>
 
-      {/* === Metrics Section === */}
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">ATS Metrics</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {metrics.map((m, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-4 p-4 bg-muted rounded-md"
-            >
-              <div className="p-2 bg-white rounded-full shadow">{m.icon}</div>
-              <div>
-                <p className="text-sm text-muted-foreground">{m.label}</p>
-                <p className="text-lg font-semibold">{m.value}</p>
-              </div>
-            </div>
-          ))}
+      <section>
+        <h2 className="text-lg font-semibold mb-2">ATS Score</h2>
+        <div className="flex items-center gap-4">
+          <span
+            className={`text-2xl font-bold ${summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"}`}
+          >
+            {summary.atsScore}%
+          </span>
+          <Progress value={summary.atsScore} className="h-3 w-full" />
         </div>
       </section>
 
-      {/* === Overall Score Section === */}
-      <section className="grid md:grid-cols-2 gap-6 items-center">
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Overall ATS Score</h2>
-          <p className="text-2xl font-bold mb-1">
-            <span
-              className={
-                summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"
-              }
-            >
-              {summary.atsScore}%
-            </span>
-          </p>
-          <Progress value={summary.atsScore} className="h-3" />
-        </div>
+      <section>
+        <h2 className="text-lg font-semibold">Match Overview</h2>
         <div className="h-64">
-          <Doughnut data={chartData} options={{ maintainAspectRatio: false }} />
+          <DoughnutChart
+            data={chartData}
+            options={{ maintainAspectRatio: false }}
+          />
         </div>
       </section>
 
-      {/* === Section-Wise Scores === */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Section Scores</h2>
-        <div className="space-y-3">
-          {sections.map((s, i) => (
-            <div key={i} className="space-y-1">
-              <div className="flex justify-between text-sm font-medium">
-                <span>{s.title}</span>
-                <span
-                  className={`font-semibold ${
-                    s.score >= 80
-                      ? "text-green-600"
-                      : s.score >= 70
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                  }`}
-                >
-                  {s.score}%
-                </span>
-              </div>
-              <Progress value={s.score} />
-              <p className="text-xs text-muted-foreground">
-                {s.score >= 80
-                  ? "Excellent"
-                  : s.score >= 70
-                    ? "Fair — needs work"
-                    : "Poor — revise this section"}
-              </p>
-            </div>
-          ))}
+      <section>
+        <h2 className="text-lg font-semibold">Feedback</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <h3 className="font-medium text-green-600">Strengths</h3>
+            <ul className="list-disc list-inside text-sm">
+              {summary.pros?.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-medium text-red-600">Weaknesses</h3>
+            <ul className="list-disc list-inside text-sm">
+              {summary.cons?.map((c, i) => (
+                <li key={i}>{c}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-medium text-yellow-500">Suggestions</h3>
+            <ul className="list-disc list-inside text-sm">
+              {summary.missing?.map((m, i) => (
+                <li key={i}>{m}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* === Strengths === */}
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <ThumbsUp className="text-green-500 w-4 h-4" />
-          Strengths
-        </h2>
-        <ul className="list-disc list-inside text-sm">
-          {summary.pros?.map((p, i) => (
-            <li key={i}>{p}</li>
-          ))}
-        </ul>
-      </section>
-
-      {/* === Weaknesses === */}
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <XOctagon className="text-red-500 w-4 h-4" />
-          Weaknesses
-        </h2>
-        <ul className="list-disc list-inside text-sm">
-          {summary.cons?.map((c, i) => (
-            <li key={i}>{c}</li>
-          ))}
-        </ul>
-      </section>
-
-      {/* === Suggestions === */}
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Lightbulb className="text-yellow-500 w-4 h-4" />
-          Suggestions
-        </h2>
-        <ul className="list-disc list-inside text-sm">
-          {summary.missing?.map((m, i) => (
-            <li key={i}>{m}</li>
-          ))}
-        </ul>
+      <section>
+        <Button onClick={handleDownloadPDF}>Download Report PDF</Button>
       </section>
     </div>
   );
