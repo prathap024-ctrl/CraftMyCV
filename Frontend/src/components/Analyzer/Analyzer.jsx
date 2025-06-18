@@ -30,7 +30,7 @@ export default function ResumeATSReport() {
     try {
       setRefreshing(true);
       const res = await axios.get(
-        "https://craftmycv-1.onrender.com/api/analysis/fetch-analysis"
+        `https://craftmycv-1.onrender.com/api/analysis/fetch-analysis?ts=${Date.now()}`
       );
 
       if (res.data?.sections) {
@@ -54,17 +54,6 @@ export default function ResumeATSReport() {
   useEffect(() => {
     fetchAnalysis();
   }, []);
-
-  useEffect(() => {
-    if (sections.length || summary) {
-      const timeout = setTimeout(() => {
-        setSections([]);
-        setSummary(null);
-      }, 10000); // 10 seconds
-
-      return () => clearTimeout(timeout); // cleanup
-    }
-  }, [sections, summary]);
 
   const handleClear = () => {
     setSections([]);
