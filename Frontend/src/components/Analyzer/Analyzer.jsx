@@ -66,6 +66,11 @@ export default function ResumeATSReport() {
     }
   }, [sections, summary]);
 
+  const handleClear = () => {
+    setSections([]);
+    setSummary(null);
+  };
+
   if (loading) return <div className="p-6">Loading report...</div>;
 
   const overallScore = summary?.atsScore ?? 0;
@@ -106,18 +111,25 @@ export default function ResumeATSReport() {
       {/* === Header & Refresh === */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Resume ATS Report</h1>
-        <Button
-          onClick={fetchAnalysis}
-          disabled={refreshing}
-          variant="outline"
-          className="gap-2 text-black"
-        >
-          <RefreshCcw
-            className="w-4 h-4 animate-spin"
-            style={{ display: refreshing ? "inline" : "none" }}
-          />
-          Refresh Report
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={fetchAnalysis}
+            disabled={refreshing}
+            variant="outline"
+            className="gap-2 text-black"
+          >
+            <RefreshCcw
+              className="w-4 h-4 animate-spin"
+              style={{ display: refreshing ? "inline" : "none" }}
+            />
+            Refresh Report
+          </Button>
+
+          <Button onClick={handleClear} variant="destructive" className="gap-2">
+            <XOctagon className="w-4 h-4" />
+            Clear Report
+          </Button>
+        </div>
       </div>
 
       {/* === Metrics === */}
