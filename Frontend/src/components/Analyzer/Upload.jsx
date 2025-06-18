@@ -16,13 +16,13 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setResumeAnalysis } from "@/Store/Slice/Analyzer/index";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 
 function FileUploadComponent() {
   const [files, setFiles] = React.useState([]);
 
   const dispatch = useDispatch();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleUpload = async (resumeFile) => {
     const formData = new FormData();
@@ -38,7 +38,7 @@ function FileUploadComponent() {
       );
       if (res.data) {
         dispatch(setResumeAnalysis(res.data)); // store in redux
-        router.push("/dashboard");
+        navigate("/dashboard");
       }
       console.log("Analysis result:", res.data);
       toast.success("Resume analyzed successfully!");
