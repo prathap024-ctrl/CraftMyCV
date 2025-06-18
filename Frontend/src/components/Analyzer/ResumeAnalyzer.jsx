@@ -18,15 +18,10 @@ import {
   FileUploadTrigger,
 } from "@/components/ui/file-upload";
 
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  Badge,
-  Progress,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
   Upload,
   File,
@@ -144,7 +139,11 @@ export default function ResumeAnalyzer() {
               <p className="text-white text-xs">Only PDF allowed (max 5MB)</p>
             </div>
             <FileUploadTrigger asChild>
-              <Button variant="outline" size="sm" className="mt-2 w-fit text-black">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2 w-fit text-black"
+              >
                 Browse files
               </Button>
             </FileUploadTrigger>
@@ -214,8 +213,14 @@ export default function ResumeAnalyzer() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Resume ATS Report</h1>
         <div className="flex gap-2">
-          <Button onClick={handleRefresh} disabled={refreshing} variant="outline">
-            <RefreshCcw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+          <Button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            variant="outline"
+          >
+            <RefreshCcw
+              className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
           <Button onClick={handleClear} variant="destructive">
@@ -243,7 +248,11 @@ export default function ResumeAnalyzer() {
         <div>
           <h2 className="text-2xl font-semibold mb-2">
             Overall ATS Score:{" "}
-            <span className={summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"}>
+            <span
+              className={
+                summary.atsScore >= 80 ? "text-green-600" : "text-yellow-600"
+              }
+            >
               {summary.atsScore}%
             </span>
           </h2>
@@ -262,7 +271,11 @@ export default function ResumeAnalyzer() {
               <CardTitle className="text-base">{s.title}</CardTitle>
               <Badge
                 variant={
-                  s.score >= 80 ? "default" : s.score >= 70 ? "secondary" : "destructive"
+                  s.score >= 80
+                    ? "default"
+                    : s.score >= 70
+                      ? "secondary"
+                      : "destructive"
                 }
               >
                 {s.score}%
@@ -274,8 +287,8 @@ export default function ResumeAnalyzer() {
                 {s.score >= 80
                   ? "Excellent"
                   : s.score >= 70
-                  ? "Fair — needs work"
-                  : "Poor — revise this section"}
+                    ? "Fair — needs work"
+                    : "Poor — revise this section"}
               </p>
             </CardContent>
           </Card>
