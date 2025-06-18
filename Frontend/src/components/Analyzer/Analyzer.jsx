@@ -55,6 +55,17 @@ export default function ResumeATSReport() {
     fetchAnalysis();
   }, []);
 
+  useEffect(() => {
+    if (sections.length || summary) {
+      const timeout = setTimeout(() => {
+        setSections([]);
+        setSummary(null);
+      }, 10000); // 10 seconds
+
+      return () => clearTimeout(timeout); // cleanup
+    }
+  }, [sections, summary]);
+
   if (loading) return <div className="p-6">Loading report...</div>;
 
   const overallScore = summary?.atsScore ?? 0;
