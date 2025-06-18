@@ -38,7 +38,7 @@ export default function ResumeATSReport() {
     try {
       setRefreshing(true);
       const res = await axios.get(
-        `https://craftmycv-vc78.onrender.com/api/analysis/fetch-analysis`
+        `https://craftmycv-vc78.onrender.com/api/analysis/fetch-analysis?ts=${Date.now()}`
       );
 
       if (res.data?.sections) {
@@ -57,21 +57,21 @@ export default function ResumeATSReport() {
     }
   };
   useEffect(() => {
-    if (!analysisFromStore || !analysisFromStore.sections?.length) {
+    if (!analysisFromStore) {
       fetchAnalysis();
     } else {
       setSections(analysisFromStore.sections || []);
       setSummary(analysisFromStore.summary || null);
       setLoading(false);
     }
-  }, []);
+  }, [analysisFromStore]);
 
-  const handleClear = () => {
-    setSections([]);
-    setSummary(null);
-    setLoading(false);
-    dispatch(clearResumeAnalysis());
-  };
+const handleClear = () => {
+  setSections([]);
+  setSummary(null);
+  setLoading(false);
+  dispatch(clearResumeAnalysis());
+};
 
   if (loading) return <div className="p-6">Loading report...</div>;
 
@@ -162,16 +162,7 @@ export default function ResumeATSReport() {
           <Progress value={overallScore} className="h-4" />
         </div>
         <div className="h-64">
-          {chartData?.datasets[0]?.data?.length > 0 ? (
-            <Doughnut
-              data={chartData}
-              options={{ maintainAspectRatio: false }}
-            />
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No chart data available.
-            </p>
-          )}
+          <Doughnut data={chartData} options={{ maintainAspectRatio: false }} />
         </div>
       </Card>
 
